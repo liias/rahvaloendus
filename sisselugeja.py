@@ -37,7 +37,7 @@ class Sisselugeja:
         return {
             "nr": nr,
             "kaal": kaal,
-            "naabrid": naabrid_str.split(',')
+            "naabrid": [int(n) for n in naabrid_str.split(',')]
         }
 
     # esimese rea indeks on 0
@@ -47,4 +47,4 @@ class Sisselugeja:
     # võtab võrdusmärgist paremalt poolt väärtuse ning kustutab tühikud,
     # semikoolonid ning reavahetused
     def _v22rtus(self, rida):
-        return rida.split('=')[1].strip(' ;\n')
+        return int(rida.split('=')[1].strip(' ;\n'))
