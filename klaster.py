@@ -7,6 +7,7 @@ from operator import attrgetter
 
 class Klaster:
     def __init__(self):
+        self.nr = None
         self.kaal = 0
         self.kvandid = [] #Kvant objektid
 
@@ -21,9 +22,13 @@ class Klaster:
         a = [x for x in self.kvandid if x.klastrita_naabrite_arv != 0]
         if not a:
             return None
-        kvant = min(a)
 
-        #kvant = min(self.kvandid, key=attrgetter('klastrita_naabrite_arv'))
+
+        #    print "klastrita naabrite arv: %d" % k.klastrita_naabrite_arv
+        #kvant = min(a)
+
+        kvant = min(a, key=attrgetter('klastrita_naabrite_arv'))
+
         #võta mingi selle kvandi naaber
         #naabri_nr = self.v6ta_naaber_kvandi_nr(kvant)
         return kvant

@@ -37,13 +37,24 @@ class Rahvaloendus:
         self.klastrite_arv = s.klastrite_arv()
         self.kvandid = self._tee_kvandid(s.kvandid())
 
+    # kuna sisendis ei ole tegelikult kõik naabrid reale kirjutatud, siis parandame andmeid kontrollides
+    # kas iga kvant on iga oma naabri jaoks ka tema naabriks märgitud
+    def paranda_kvantide_naabrid(self):
+        for kvant in self.kvandid:
+            for naabri_nr in kvant.naabrid:
+                naaber_kvant = self.kvant_nr(naabri_nr)
+                if not kvant.nr in naaber_kvant.naabrid:
+                    naaber_kvant.naabrid.append(kvant.nr)
+
     #maakonnad, linnad on alati rajanud end keskuse äärde, seega mina alustan hoopis suurimatest kvantidest
     def tee_klastrid_peakvandiga(self):
-        self._kvandid_suured_enne = sorted(self.kvandid, key=lambda x: x.kaal, reverse=True)
+        #self._kvandid_suured_enne = sorted(self.kvandid, key=lambda x: x.kaal, reverse=True)
+        self._kvandid_suured_enne = sorted(self.kvandid, key=lambda x: len(x.naabrid), reverse=True)
         # nüüd valin neist välja esimesed m (klastrite arv) kvanti, seega iga klastri "keskuseks" saab üks
         # m suurimaist kvandist
         for i in range(self.klastrite_arv):
             klaster = Klaster()
+            klaster.nr = i + 1
             kvant = self._kvandid_suured_enne.pop(0)
             klaster.lisa_kvant(kvant)
             self.klastrid.append(klaster)
@@ -59,26 +70,41 @@ class Rahvaloendus:
                 hea_kvant = klaster.leia_hea_kvant()
                 if hea_kvant is None:
                     continue
+
                 naabri_nr = self.v6ta_naaber_kvandi_nr(hea_kvant)  # pop
+                if naabri_nr == 1:
+                    print "aa 1, kvandi nr %d" % hea_kvant.nr
                 if naabri_nr is None:
                     #print i
                     continue
+
+                if naabri_nr == 1:
+                    print "naabri_nr on 1"
                 kvant = self.kvant_nr(naabri_nr)
                 if kvant:
                     # loodetavasti saab sama naaber teise klastrisse, teise klastri kvandi naabrina ?
                     # ei saagi...
                     if kvant.kaal + klaster.kaal > self.max:
+                        print "kvandi %d kaal %d on liiga suur klastri %d jaoks" % (kvant.nr, kvant.kaal, klaster.nr)
                         continue
                     klaster.lisa_kvant(kvant)
                     self.v6etud_kvantide_numbrid.append(kvant.nr)
+
+    # kui mõne klastri miinimum valijate arv pole täis, siis proovi teistest klastritest sinna võtta
+    def t2ida_miinimum(self):
+        for klaster in self.klastrid:
+            if klaster.kaal < self.min:
+                print "klastris nr %d on liiga v2he" % klaster.nr
 
     #TODO: fix infinite loophole
     def v6ta_naaber_kvandi_nr(self, kvant):
         naabri_nr = kvant.v6ta_naabri_nr()
         #kui naaberkvant on juba klastris
         if naabri_nr in self.v6etud_kvantide_numbrid:
-            self.v6ta_naaber_kvandi_nr(kvant)
+            return self.v6ta_naaber_kvandi_nr(kvant)
         else:
+            if naabri_nr == 1:
+                print "yks, kvandi nr %d" % kvant.nr
             return naabri_nr
 
     # tagastab kvandi numbri järgi
@@ -97,10 +123,12 @@ class Rahvaloendus:
 if __name__ == "__main__":
     rahvaloendus = Rahvaloendus()
     rahvaloendus.algv22rtusta()
+    rahvaloendus.paranda_kvantide_naabrid()
     #print rahvaloendus.kvandid
     #print "------"
     rahvaloendus.tee_klastrid_peakvandiga()
     rahvaloendus.lisa_vaheldumisi_klastritele_kvante()
+    rahvaloendus.t2ida_miinimum()
 
     #rahvaloendus.lisa_kvantide_naabrid_peakvantidele()
     #for klaster in rahvaloendus.klastrid:

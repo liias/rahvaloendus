@@ -13,6 +13,8 @@ class Kvant:
 
     #võta esimene naaber
     def v6ta_naabri_nr(self):
+        if self.nr == 4:
+            print "neli"
         if self.klastrita_naabrite_arv == 0:
             return None
         self.klastrita_naabrite_arv -= 1
