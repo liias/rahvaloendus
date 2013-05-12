@@ -43,25 +43,21 @@ class Klaster:
 
     #naabritega tähendab siin, et klastris pole veel kvandil naabrit küljes
     def leia_hea_kvant(self):
-        #TODO arvesta kaugus_peakvandist
         #kvant millel on kõige rohkem naabreid juba klastrisse pandud
         a = [x for x in self.kvandid if x.klastrita_naabrite_arv != 0]
         if not a:
             return None
-
-
-        #    print "klastrita naabrite arv: %d" % k.klastrita_naabrite_arv
-        #kvant = min(a)
-
         kvant = min(a, key=attrgetter('klastrita_naabrite_arv'))
-
         #võta mingi selle kvandi naaber
-        #naabri_nr = self.v6ta_naaber_kvandi_nr(kvant)
         return kvant
 
     @property
     def kvantide_numbrid(self):
         return [int(k.nr) for k in self.kvandid]
 
+    # väljastan praegu parema testimise jaoks ka kaalu
     def v2ljund(self):
         return ','.join(str(k.nr) for k in self.kvandid) + " (%d)" % self.kaal
+
+    def v2ljund_fail(self):
+        return ','.join(str(k.nr) for k in self.kvandid)

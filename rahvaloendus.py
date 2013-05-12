@@ -123,7 +123,7 @@ class Rahvaloendus:
                                     return True
                                 else:
                                     #kui sellest ei piisanud, võta veel kvante
-                                    self.liiguta_kvant(klaster)
+                                    self.liiguta_kvant_kui_vaja(klaster)
         return False
 
     def v6ta_naaber_kvandi_nr(self, kvant):

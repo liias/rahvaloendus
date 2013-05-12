@@ -11,7 +11,7 @@ class LahendiKirjutaja:
     def _tee_faili_sisu(self, klastrid):
         faili_sisu = ""
         for i, klaster in enumerate(klastrid, start=1):
-            faili_sisu += "%d;%s;\n" % (i, klaster.v2ljund())
+            faili_sisu += "%d;%s;\n" % (i, klaster.v2ljund_fail())
         return faili_sisu
 
     def kirjuta(self, klastrid):
