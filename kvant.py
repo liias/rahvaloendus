@@ -8,24 +8,19 @@ class Kvant:
         self.klastrita_naabrite_arv = len(naabrid)
         self.komponentide_arv = None
         self.klaster = None
-        self._kasutatud_naabrid = []
+        self.kasutatud_naabrite_numbrid = []
         self.kaugus_peakvandist = None
 
     #võta esimene naaber
     def v6ta_naabri_nr(self):
-        if self.nr == 4:
-            print "neli"
         if self.klastrita_naabrite_arv == 0:
             return None
         self.klastrita_naabrite_arv -= 1
         naaber = self.naabrid.pop()
+        self.kasutatud_naabrite_numbrid.append(naaber)
         return naaber
 
-    def v6ta_naaber_indeks(self):
-        self.klastrita_naabrite_arv -= 1
 
-    def v6ta_naaber_nr(self):
-        self.klastrita_naabrite_arv -= 1
 
     #def v6ta_naaber_nr(self, nr):
     #    self.kasutatud_naabrite_nrid.append(nr)

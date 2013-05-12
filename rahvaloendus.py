@@ -72,8 +72,6 @@ class Rahvaloendus:
                     continue
 
                 naabri_nr = self.v6ta_naaber_kvandi_nr(hea_kvant)  # pop
-                if naabri_nr == 1:
-                    print "aa 1, kvandi nr %d" % hea_kvant.nr
                 if naabri_nr is None:
                     #print i
                     continue
@@ -93,18 +91,47 @@ class Rahvaloendus:
     # kui mõne klastri miinimum valijate arv pole täis, siis proovi teistest klastritest sinna võtta
     def t2ida_miinimum(self):
         for klaster in self.klastrid:
-            if klaster.kaal < self.min:
-                print "klastris nr %d on liiga v2he" % klaster.nr
+            self.liiguta_kvant_kui_vaja(klaster)
 
-    #TODO: fix infinite loophole
+    # miinimumi täitmiseks
+    def liiguta_kvant_kui_vaja(self, klaster):
+        if klaster.kaal >= self.min:
+            return True
+
+        kaal_puudu = self.min - klaster.kaal
+        print "klastris nr %d on liiga v2he, vaja veel %d" % (klaster.nr, kaal_puudu)
+        for teine_klaster in self.klastrid:
+            if teine_klaster.kaal < self.min:
+                continue
+                #kui teise klastri kaal on piisavalt suur
+            teise_klastri_ylej22k = teine_klaster.kaal - self.min
+            print "ülejääk %d" % teise_klastri_ylej22k
+            if teise_klastri_ylej22k >= kaal_puudu:
+                #kui leiame piisavalt suure ning väikse kaaluga kvandi, siis võtame selle
+                for kvant in teine_klaster.kvandid:
+                    # siin võiks proovida ka nii et võib mitu kvanti võtta, ehk kvandi kaal ei pea olema
+                    #  suurem kui kaal_puudu, aga siis peaks ikkagi eelistama sellist kvanti
+                    if kaal_puudu < kvant.kaal < teise_klastri_ylej22k:
+                        # kui selle potentsiaalselt sobiva kvandi naabritest mõni on ka selles klastris kuhu meil
+                        # teda vaja on (sest ülesanne tahab, et klaster oleks sidus)
+                        if set(kvant.kasutatud_naabrite_numbrid) & set(klaster.kvantide_numbrid):
+                            print "jah, kvant nr %d,  %s vs %s" % (
+                                kvant.nr, kvant.kasutatud_naabrite_numbrid, klaster.kvantide_numbrid)
+                            if teine_klaster.eemalda_kvant(kvant):
+                                klaster.lisa_kvant(kvant)
+                                if klaster.kaal >= self.min:
+                                    return True
+                                else:
+                                    #kui sellest ei piisanud, võta veel kvante
+                                    self.liiguta_kvant(klaster)
+        return False
+
     def v6ta_naaber_kvandi_nr(self, kvant):
         naabri_nr = kvant.v6ta_naabri_nr()
         #kui naaberkvant on juba klastris
         if naabri_nr in self.v6etud_kvantide_numbrid:
             return self.v6ta_naaber_kvandi_nr(kvant)
         else:
-            if naabri_nr == 1:
-                print "yks, kvandi nr %d" % kvant.nr
             return naabri_nr
 
     # tagastab kvandi numbri järgi
