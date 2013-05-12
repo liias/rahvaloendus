@@ -106,6 +106,15 @@ if __name__ == "__main__":
     #for klaster in rahvaloendus.klastrid:
     #print klaster.kvandid
 
+    print "kaal peab jääma vahemikku %d-%d" % (rahvaloendus.min, rahvaloendus.max)
+    print "kokku peab kvante olema %d" % rahvaloendus.kvantide_arv
+    print "kokku peab klastreid olema %d" % rahvaloendus.klastrite_arv
+
     lahendi_kirjutaja = LahendiKirjutaja()
     lahendi_kirjutaja.kirjuta(rahvaloendus.klastrid)
-    print "ok"
+
+    v6etud_kvantide_arv = len(rahvaloendus.v6etud_kvantide_numbrid)
+    print "Ära võetud %d kvanti: %s" % (v6etud_kvantide_arv, rahvaloendus.v6etud_kvantide_numbrid)
+
+    puuduolevate_kvantide_arv = rahvaloendus.kvantide_arv - v6etud_kvantide_arv
+    print "puudu on %d kvanti" % puuduolevate_kvantide_arv

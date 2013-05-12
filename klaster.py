@@ -29,4 +29,4 @@ class Klaster:
         return kvant
 
     def v2ljund(self):
-        return ','.join([str(k.nr) for k in self.kvandid])
+        return ','.join([str(k.nr) for k in self.kvandid]) + " (%d)" % self.kaal
